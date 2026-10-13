@@ -415,6 +415,98 @@
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
   }
+
+  /* Descripción de "al terminar podrás..." en la pantalla inicial */
+  .feature-highlight {
+    background: linear-gradient(135deg, rgba(37,211,102,.08) 0%, rgba(79,70,229,.08) 100%);
+    border: 1px solid var(--border);
+    border-left: 4px solid #25d366;
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin: 0 0 20px;
+    font-size: .9rem;
+  }
+  .feature-highlight strong { color: var(--text); font-size: .95rem; }
+  .feature-highlight ul {
+    list-style: none;
+    margin: 10px 0 0;
+    padding: 0;
+  }
+  .feature-highlight li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 8px;
+    line-height: 1.45;
+    color: var(--muted);
+  }
+  .feature-highlight li:last-child { margin-bottom: 0; }
+  .feature-highlight .chip {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    font-size: .72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    padding: 3px 8px;
+    border-radius: 999px;
+    min-width: 68px;
+    justify-content: center;
+    color: white;
+  }
+  .feature-highlight .chip.wa { background: #25d366; }
+  .feature-highlight .chip.pr { background: var(--primary); }
+  .feature-highlight .chip.cp { background: #64748b; }
+
+  /* Botones compartir / imprimir */
+  .share-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--primary);
+  }
+  .share-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-weight: 600;
+    font-size: .92rem;
+    cursor: pointer;
+    transition: all .18s ease;
+  }
+  .share-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,.1); }
+  .share-btn.whatsapp { background: #25d366; color: white; border-color: #25d366; }
+  .share-btn.whatsapp:hover { background: #1ebe5c; border-color: #1ebe5c; color: white; }
+  .share-btn.print { background: var(--primary); color: white; border-color: var(--primary); }
+  .share-btn.print:hover { background: var(--primary-hover); border-color: var(--primary-hover); color: white; }
+  .share-btn.copy:hover { color: var(--primary); border-color: var(--primary); }
+
+  /* Reglas de impresión */
+  @media print {
+    body { background: white !important; color: black !important; }
+    .topbar, .nav, .no-print, header.topbar, #reviewList ~ *,
+    .meta-strip, .progress, button, .toast, .confetti,
+    .welcome-note, .welcome-reopen, .resume-banner,
+    #screen-welcome, #screen-exam, #filterAll, #filterWrong, #filterRight { display: none !important; }
+    #screen-results { display: block !important; }
+    .card { box-shadow: none !important; border: none !important; padding: 0 !important; }
+    .score-circle { page-break-inside: avoid; }
+    .tips { background: #f3f4f6 !important; color: black !important; border: 1px solid #d1d5db !important; }
+    .tips h3, .tips h4 { color: #1f2937 !important; }
+    .review-item { page-break-inside: avoid; background: #f9fafb !important; color: black !important; }
+    .stat, .cat-row .bar, .cat-row .bar > div { color: black !important; }
+    a[href]:after { content: ""; }
+    .share-row { display: none !important; }
+    @page { margin: 1.4cm; }
+  }
   .toast {
     position: fixed;
     bottom: 20px;
@@ -748,13 +840,22 @@
         </select>
       </div>
 
-      <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:14px;margin:10px 0 20px;font-size:.9rem;color:var(--muted);">
+      <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:14px;margin:10px 0 14px;font-size:.9rem;color:var(--muted);">
         <strong style="color:var(--text);">¿Qué incluye?</strong>
         <ul style="margin:6px 0 0;padding-left:20px;">
           <li>Competencias profesionales, habilidades duras y blandas</li>
           <li>Necesidades, planeación y objetivos (método SMART)</li>
           <li>Inteligencia emocional, MSCEIT y TMMS</li>
           <li>Valores, ética, moral y ciclo de la experiencia</li>
+        </ul>
+      </div>
+
+      <div class="feature-highlight">
+        <strong>📤 Al terminar podrás:</strong>
+        <ul>
+          <li><span class="chip wa">WhatsApp</span> Compartir tu plan de estudio por WhatsApp a un contacto o grupo con tu nota, desempeño por tema y los puntos a reforzar.</li>
+          <li><span class="chip pr">PDF</span> Imprimirlo o guardarlo como PDF con un formato limpio (sin menús ni botones) para llevártelo o entregarlo.</li>
+          <li><span class="chip cp">Copiar</span> Copiar el plan al portapapeles para pegarlo donde quieras (notas, correo, Drive, Classroom…).</li>
         </ul>
       </div>
 
@@ -825,6 +926,29 @@
       <div class="tips" id="tipsBox">
         <h3>📚 Plan de estudio recomendado</h3>
         <div id="tipsContent"></div>
+        <div class="share-row no-print">
+          <button class="share-btn whatsapp" id="shareWaBtn" title="Compartir por WhatsApp">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+              <path d="M20.52 3.48A11.78 11.78 0 0 0 12.04 0C5.47 0 .13 5.34.13 11.91c0 2.1.55 4.15 1.59 5.95L0 24l6.3-1.66a11.9 11.9 0 0 0 5.74 1.46h.01c6.57 0 11.91-5.34 11.91-11.91 0-3.18-1.24-6.17-3.44-8.41zM12.05 21.8h-.01a9.9 9.9 0 0 1-5.04-1.38l-.36-.21-3.74.98 1-3.64-.24-.37a9.86 9.86 0 0 1-1.52-5.27c0-5.46 4.44-9.9 9.91-9.9 2.65 0 5.14 1.03 7 2.9a9.82 9.82 0 0 1 2.89 7c0 5.47-4.44 9.91-9.9 9.91zm5.43-7.42c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.95 1.17-.18.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48a9 9 0 0 1-1.66-2.06c-.17-.3-.02-.46.13-.6.14-.14.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.6-.92-2.2-.24-.58-.49-.5-.67-.51l-.57-.01c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.22 3.08c.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.69.63.71.22 1.36.19 1.87.12.57-.09 1.76-.72 2-1.41.25-.7.25-1.29.18-1.41-.07-.12-.27-.2-.57-.35z"/>
+            </svg>
+            Compartir por WhatsApp
+          </button>
+          <button class="share-btn print" id="printBtn" title="Imprimir / Guardar PDF">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="6 9 6 2 18 2 18 9"/>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+              <rect x="6" y="14" width="12" height="8"/>
+            </svg>
+            Imprimir / PDF
+          </button>
+          <button class="share-btn copy" id="copyPlanBtn" title="Copiar texto del plan">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+            Copiar
+          </button>
+        </div>
       </div>
 
       <h3 style="margin-top:28px;">Revisión detallada</h3>
@@ -1755,6 +1879,101 @@ function renderReview(detail, filter) {
 document.getElementById("filterAll").onclick   = () => renderReview(computeStats().detail, "all");
 document.getElementById("filterWrong").onclick = () => renderReview(computeStats().detail, "wrong");
 document.getElementById("filterRight").onclick = () => renderReview(computeStats().detail, "right");
+
+/* =========================================================
+   Compartir plan de estudio por WhatsApp / Copiar / Imprimir
+   ========================================================= */
+function buildPlanText() {
+  const s = computeStats();
+  const pct = Math.round(s.ok / s.total * 100);
+  const v = verdictFor(pct);
+  const date = new Date().toLocaleString("es-MX", { dateStyle:"long", timeStyle:"short" });
+  const lines = [];
+  lines.push("📘 *Examen – Diseño e Intervención en Capacitación*");
+  lines.push(`👤 ${state.name || "—"}`);
+  lines.push(`📅 ${date}`);
+  lines.push("");
+  lines.push(`🎯 *Resultado:* ${s.ok}/${s.total}  (${pct}%)  — _${v.t}_`);
+  lines.push(`⏱️ Tiempo: ${fmtTime(s.timeMs)}  ·  Promedio: ${Math.round(s.timeMs/1000/s.total)}s/pregunta`);
+  lines.push(`✅ Correctas: ${s.ok}   ❌ Incorrectas: ${s.err}`);
+  lines.push("");
+  lines.push("📊 *Desempeño por tema:*");
+  Object.entries(s.byCat).forEach(([cat, d]) => {
+    const p = Math.round(d.ok/d.total*100);
+    const dots = "▰".repeat(Math.round(p/10)) + "▱".repeat(10 - Math.round(p/10));
+    lines.push(`• ${cat}: ${d.ok}/${d.total} ${dots} ${p}%`);
+  });
+  lines.push("");
+  lines.push("📚 *Plan de estudio recomendado:*");
+  const weak = Object.entries(s.byCat)
+    .map(([cat, d]) => ({ cat, pct: d.ok/d.total, d }))
+    .filter(x => x.pct < 0.75)
+    .sort((a,b) => a.pct - b.pct);
+  const tips = {
+    "Competencias": [
+      "Fichas de autores: Chomsky, Marbach, Levy-Leboyer, Mertens, Du Cret, Perrenout, Le Boterf.",
+      "Distingue las perspectivas: conductual, sociocultural y laboral.",
+      "Habilidades duras (técnicas/medibles) vs. blandas (interpersonales).",
+    ],
+    "Necesidades y planeación": [
+      "Repasa el método SMART con un ejemplo propio.",
+      "Secuencia: necesidad → general → específicos → SMART → redactar → responsables → ajustar.",
+      "Pozo Llorente: identificación, análisis y priorización.",
+    ],
+    "Inteligencia emocional": [
+      "MSCEIT: percepción, facilitación, comprensión, manejo.",
+      "TMMS-24: atención, claridad y reparación emocional.",
+      "Diferencia conciencia, autocontrol, motivación, empatía y habilidades sociales.",
+    ],
+    "Valores, ética y moral": [
+      "Ética = reflexión filosófica sobre la moral (axiología).",
+      "Moral = normas/costumbres sociales (mos-moris).",
+      "Valores = principios guía.",
+    ],
+    "Ciclo de la experiencia": [
+      "Fase ↔ bloqueo: figura→negación, sensación→desensibilización, movilización→represión ideológica, acción→represión fisiológica, contacto→dispersión, retiro→compulsión.",
+      "Autoconocimiento: conocimiento emocional + autoevaluación + confianza.",
+      "Empatía: comprensión + servicio + diversidad.",
+    ],
+  };
+  if (weak.length === 0) {
+    lines.push("¡Dominas todos los temas! Consolida enseñando el material a alguien más y repite el examen mezclado.");
+  } else {
+    weak.forEach(w => {
+      lines.push("");
+      lines.push(`▶ *${w.cat}* (${w.d.ok}/${w.d.total} · ${Math.round(w.pct*100)}%)`);
+      (tips[w.cat] || []).forEach(t => lines.push(`  – ${t}`));
+    });
+  }
+  lines.push("");
+  lines.push("— Generado con el simulador de examen ☕");
+  return lines.join("\n");
+}
+
+document.getElementById("shareWaBtn").addEventListener("click", () => {
+  const text = buildPlanText();
+  const url = "https://wa.me/?text=" + encodeURIComponent(text);
+  window.open(url, "_blank", "noopener");
+});
+
+document.getElementById("printBtn").addEventListener("click", () => {
+  window.print();
+});
+
+document.getElementById("copyPlanBtn").addEventListener("click", async () => {
+  const text = buildPlanText();
+  try {
+    await navigator.clipboard.writeText(text);
+    toast("📋 Plan copiado al portapapeles");
+  } catch(e) {
+    // Fallback para navegadores sin clipboard API
+    const ta = document.createElement("textarea");
+    ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand("copy"); toast("📋 Plan copiado"); } catch(_) { toast("No se pudo copiar"); }
+    ta.remove();
+  }
+});
 
 /* Modo estudio: repite solo las falladas */
 document.getElementById("studyBtn").addEventListener("click", () => {
