@@ -582,7 +582,6 @@
     width: 0;
     background: linear-gradient(90deg, var(--primary), #a855f7);
     border-radius: 999px;
-    transition: width .18s ease;
   }
   .swipe-track-text {
     position: absolute;
@@ -619,8 +618,9 @@
     align-items: center;
     justify-content: center;
     box-shadow: 0 4px 14px rgba(79,70,229,.4);
-    transition: transform .22s cubic-bezier(.22,.9,.33,1), background .25s;
+    transition: background .25s;
     z-index: 2;
+    will-change: transform;
   }
   .swipe-start.dragging .swipe-thumb { transition: none; }
   .swipe-start.dragging .swipe-track-text { opacity: .3; }
