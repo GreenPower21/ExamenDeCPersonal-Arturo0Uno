@@ -570,7 +570,7 @@
     border: 1px solid var(--border);
     overflow: hidden;
     user-select: none;
-    touch-action: pan-y;
+    touch-action: none;
     cursor: grab;
     margin-top: 6px;
   }
@@ -1347,25 +1347,34 @@ const swipeText  = document.getElementById("swipeTrackText");
   }
   function onDown(e) {
     if (swipeStart.classList.contains("locked")) return;
+    e.preventDefault();
     computeMax();
     dragging = true;
     activePointerId = e.pointerId;
-    swipeStart.setPointerCapture(e.pointerId);
+    try { swipeStart.setPointerCapture(e.pointerId); } catch(_) {}
     startX = e.clientX - currentX;
     swipeStart.classList.add("dragging");
+    // Escuchar en window para que el swipe no se pierda si el dedo/mouse sale del riel
+    window.addEventListener("pointermove", onMove, { passive: false });
+    window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
   }
   function onMove(e) {
     if (!dragging || e.pointerId !== activePointerId) return;
+    e.preventDefault();
     setX(e.clientX - startX);
   }
   function onUp(e) {
     if (!dragging) return;
+    if (e.pointerId !== undefined && e.pointerId !== activePointerId) return;
     dragging = false;
     swipeStart.classList.remove("dragging");
     try { swipeStart.releasePointerCapture(activePointerId); } catch(_) {}
+    window.removeEventListener("pointermove", onMove);
+    window.removeEventListener("pointerup", onUp);
+    window.removeEventListener("pointercancel", onUp);
     activePointerId = null;
     if (currentX >= maxX - 2) {
-      // completado: lanzar inicio
       swipeStart.classList.add("locked");
       triggerStart();
     } else {
@@ -1373,9 +1382,6 @@ const swipeText  = document.getElementById("swipeTrackText");
     }
   }
   swipeStart.addEventListener("pointerdown", onDown);
-  swipeStart.addEventListener("pointermove", onMove);
-  swipeStart.addEventListener("pointerup", onUp);
-  swipeStart.addEventListener("pointercancel", onUp);
 
   // Accesibilidad: Enter/Space o doble clic rápido también inician
   swipeStart.addEventListener("keydown", (e) => {
